@@ -1,0 +1,4 @@
+*.csproj
+/WeatherStatistic/WeatherStatistic/obj
+/WeatherStatistic/WeatherStatistic/Migrations
+/WeatherStatistic/WeatherStatistic/bin
