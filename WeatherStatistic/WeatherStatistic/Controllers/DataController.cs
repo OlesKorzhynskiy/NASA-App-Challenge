@@ -133,7 +133,8 @@ namespace WeatherStatistic.Controllers
                 {
                     Date = g.Key,
                     Value = g.Max(x => x.Strength)
-                });
+                }).
+                OrderBy(d => d.Date.Year);
 
             return Json(data);
         }

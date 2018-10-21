@@ -1,7 +1,4 @@
-﻿<div id="container" style="width: 50%; display: block;">
-    <canvas id="myChart"></canvas>
-</div>
-
+﻿<canvas id="myChart"></canvas>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 
@@ -46,16 +43,17 @@
 </style>
 @*--------------------------------------------------*@
 
-<div id="container" style="width: 50%; display:block;">
+<div id="container">
     <canvas id="canvas"></canvas>
 </div>
 <script>
+    var ctx;
     var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     var color = Chart.helpers.color;
     var barChartData = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: MONTHS,
         datasets: [{
-            label: 'Dataset 1',
+            label: 'Planetary k index',
             backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
             borderColor: window.chartColors.red,
             borderWidth: 1,
@@ -72,23 +70,46 @@
 
     };
 
-    window.onload = function () {
-        var ctx = document.getElementById('canvas').getContext('2d');
-        window.myBar = new Chart(ctx, {
-            type: 'bar',
-            data: barChartData,
-            options: {
-                responsive: true,
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Chart.js Bar Chart'
-                }
-            }
-        });
+    function updateChart(period, startdate, enddate) {
+        $.ajax({
+            url: "/data/GetStatisticsBy" + period + "?start=" + startdate + "&end=" + enddate + "&day=" + startdate,
+            method: "get"
+        }).done(function (data) {
+            if(period == 'Year')
+                barChartData.labels = data.map(val => MONTHS[val.date.month-1] + ' ' + val.date.year);
+            else
+                barChartData.labels = data.map(val => (new Date(val.date)).getDate());
+            barChartData.datasets[0].data = data.map(val => val.value);
 
+            window.myBar = new Chart(ctx, {
+                type: 'bar',
+                data: barChartData,
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Geomagnetic storms from ' + startdate + ' to ' + enddate
+                    },
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                max: 10,
+                                min: 0
+                            }
+                        }]
+                    }
+                }
+            });
+        });        
+    };
+
+    window.onload = function () {
+        ctx = document.getElementById('canvas').getContext('2d');
+        updateChart("Year", "2016-10-01", "2018-10-31");
     };
 
     
