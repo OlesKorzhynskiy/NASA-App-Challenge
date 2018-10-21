@@ -95,5 +95,47 @@ namespace WeatherStatistic.Controllers
 
             return Json(data);
         }
+
+        public async Task<JsonResult> GetStatisticsByDay(DateTime day)
+        {
+            var data = DbContext.WeatherData.Where(d => d.Date == day)
+                .Select(d => new
+                {
+                    Date = d.Date.TimeOfDay,
+                    Value = d.Strength
+                });
+
+            return Json(data);
+        }
+
+        public async Task<JsonResult> GetStatisticsByMonth(DateTime start, DateTime end)
+        {
+            if (start > end)
+                end = start;
+            var data = DbContext.WeatherData.Where(d => d.Date >= start && d.Date <= end).
+                GroupBy(d => d.Date.Date)
+                .Select(g => new
+                {
+                    Date = g.Key,
+                    Value = g.Max(x => x.Strength)
+                });
+
+            return Json(data);
+        }
+
+        public async Task<JsonResult> GetStatisticsByYear(DateTime start, DateTime end)
+        {
+            if (start > end)
+                end = start;
+            var data = DbContext.WeatherData.Where(d => d.Date >= start && d.Date <= end).
+                GroupBy(d => new { d.Date.Year, d.Date.Month })
+                .Select(g => new
+                {
+                    Date = g.Key,
+                    Value = g.Max(x => x.Strength)
+                });
+
+            return Json(data);
+        }
     }
 }
