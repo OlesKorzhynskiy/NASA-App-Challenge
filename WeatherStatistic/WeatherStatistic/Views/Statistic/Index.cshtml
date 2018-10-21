@@ -75,7 +75,10 @@
             url: "/data/GetStatisticsBy" + period + "?start=" + startdate + "&end=" + enddate + "&day=" + startdate,
             method: "get"
         }).done(function (data) {
-            barChartData.labels = data.map(val => (new Date(val.date)).getDate());
+            if(period == 'Year')
+                barChartData.labels = data.map(val => MONTHS[val.date.month-1] + ' ' + val.date.year);
+            else
+                barChartData.labels = data.map(val => (new Date(val.date)).getDate());
             barChartData.datasets[0].data = data.map(val => val.value);
 
             window.myBar = new Chart(ctx, {
@@ -106,7 +109,7 @@
 
     window.onload = function () {
         ctx = document.getElementById('canvas').getContext('2d');
-        updateChart("Month", "2018-10-01", "2018-10-31");
+        updateChart("Year", "2016-10-01", "2018-10-31");
     };
 
     
