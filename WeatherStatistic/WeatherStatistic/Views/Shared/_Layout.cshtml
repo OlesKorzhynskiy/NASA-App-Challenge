@@ -11,14 +11,14 @@
 <body>
 <div class="container-fluid" id="MainContainer">
     <div class="row">
-        <div class="col-3" id="MainMenu">
+        <div class="col-2" id="MainMenu">
             <ul>
-                <li>Home</li>
+                <li><a asp-controller="Home">Home</a></li>
                 <li><a asp-controller="Statistic">Statistics</a></li>
-                <li>Settings</li>
+                <li><a asp-controller="Settings">Settings</a></li>
             </ul>
         </div>
-        <div class="col-9">
+        <div class="col-10">
             <div class="container body-content">
                 @RenderBody()
             </div>

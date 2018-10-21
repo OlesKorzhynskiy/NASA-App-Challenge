@@ -31,3 +31,12 @@ body {
 #MainMenu ul li {
     margin-top: 15px;
 }
+
+#MainMenu ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+#MainMenu ul li a:hover {
+    color: blue;
+}
